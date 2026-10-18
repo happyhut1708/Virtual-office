@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Virtual Office Showcase — kantor pixel-art tim bot: 9 meja, sprite hidup, routing plan. Versi showcase publik dengan data demo." />
+    <link rel="icon" href="data:," />
+    <title>Virtual Office Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f3f2ee;
+        --surface: #fbfaf7;
+        --surface-2: #eceae3;
+        --text: #171a1e;
+        --ink-soft: #454b53;
+        --dim: #767d87;
+        --border: #d9d6cc;
+        --border-strong: #b9b5a8;
+        --accent: #d9480f;
+        --accent-soft: #fdeee6;
+        --green: #1e9e6a;
+        --green-soft: #e2f4ec;
+        --amber: #b07d10;
+        --amber-soft: #faf0d7;
+        --blue: #1f6fb2;
+        --blue-soft: #e3eef8;
+        --shadow: 0 1px 2px rgba(23,26,30,.05), 0 8px 24px -12px rgba(23,26,30,.18);
+        --radius: 14px;
+        --font-sans: "Archivo", system-ui, sans-serif;
+        --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+        --font-pixel: "Press Start 2P", "IBM Plex Mono", monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14101f;
+          --surface: #1e1830;
+          --surface-2: #2a2142;
+          --text: #eceef1;
+          --ink-soft: #b6bcc5;
+          --dim: #8b93a0;
+          --border: #372d52;
+          --border-strong: #4d3f73;
+          --accent: #ff7a3d;
+          --accent-soft: #2c1d13;
+          --green: #3ecf8e;
+          --green-soft: #12291f;
+          --amber: #e5b95c;
+          --amber-soft: #2b2110;
+          --blue: #6db3ec;
+          --blue-soft: #122636;
+          --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.6);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0; background: var(--bg); color: var(--text);
+        font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
+        font-size: 16px; line-height: 1.5;
+      }
+      button { font-family: inherit; }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px 72px; }
+      @media (min-width: 640px) { .wrap { padding: 0 20px 72px; } }
+
+      /* ---------- header ---------- */
+      header.top { padding-top: 24px; }
+      .top-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; justify-content: space-between; }
+      .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+      .vo-logo {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+        width: 34px; height: 34px; padding: 5px; flex: none;
+        background: #17102a; border: 2px solid var(--border-strong); border-radius: 8px;
+      }
+      .vo-logo span { background: var(--accent); }
+      .vo-logo span:nth-child(2) { background: #3ecf8e; }
+      .vo-logo span:nth-child(3) { background: #6db3ec; }
+      .vo-logo span:nth-child(4) { background: #ffb020; }
+      h1.font-pixel { font-family: var(--font-pixel); margin: 0; font-size: 15px; line-height: 1.25; letter-spacing: 0; }
+      @media (min-width: 640px) { h1.font-pixel { font-size: 19px; } }
+      .brand-sub { margin: 8px 0 0; font-size: 12.5px; color: var(--dim); font-family: var(--font-mono); }
+      .demo-chip {
+        display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+        letter-spacing: .1em; text-transform: uppercase; background: #ffb020; color: #241a20;
+        border-radius: 999px; padding: 4px 10px; margin-left: 8px; vertical-align: 2px;
+      }
+      .clock-card {
+        background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 10px 16px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px;
+      }
+      .clock-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+      .clock-time { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+      .clock-date { font-size: 12px; color: var(--ink-soft); line-height: 1.45; }
+      @media (max-width: 639px) { .clock-date { display: none; } }
+
+      .demo-banner {
+        margin-top: 18px; border: 1.5px dashed #b07d10; background: var(--amber-soft);
+        border-radius: var(--radius); padding: 12px 16px; font-size: 13.5px; color: var(--ink-soft);
+        display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap;
+      }
+      .demo-banner strong { color: var(--text); }
+      .demo-banner .tag {
+        flex: none; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .1em;
+        text-transform: uppercase; background: #ffb020; color: #241a20; border-radius: 999px; padding: 4px 10px; margin-top: 1px;
+      }
+
+      /* ---------- tabs ---------- */
+      nav.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+      .vo-tab {
+        font-family: var(--font-pixel); font-size: 10px; line-height: 1;
+        padding: 11px 13px; border-radius: 9px; cursor: pointer; white-space: nowrap;
+        border: 2px solid var(--border); background: var(--surface); color: var(--dim);
+        transition: color .15s, border-color .15s, background .15s, transform .12s ease;
+      }
+      .vo-tab:hover { color: var(--text); border-color: var(--border-strong); }
+      .vo-tab:active { transform: scale(.96); }
+      .vo-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 6px 18px -8px var(--accent); }
+      .panel { margin-top: 20px; }
+      .panel[hidden] { display: none; }
+
+      /* ---------- scene ---------- */
+      .scene-wrap { position: relative; }
+      .scene-frame {
+        border: 3px solid #0d0916; border-radius: 16px; overflow: hidden; background: #17102a;
+        box-shadow: 0 0 0 2px var(--border-strong), var(--shadow), 0 24px 48px -24px rgba(10,6,18,.55);
+      }
+      .scene-frame canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+      .scene-hit {
+        position: absolute; background: transparent; border: 0; cursor: pointer; padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .scene-hit:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 6px; }
+      .bot-popup {
+        position: absolute; z-index: 20; width: 264px; max-width: 78vw;
+        background: var(--surface); border: 1.5px solid var(--border-strong);
+        border-radius: 14px; padding: 13px 14px; box-shadow: 0 18px 40px -14px rgba(5,3,10,.65);
+        animation: vo-popup .22s cubic-bezier(.22,.9,.3,1) backwards;
+      }
+      @keyframes vo-popup { from { opacity: 0; margin-top: 6px; } to { opacity: 1; margin-top: 0; } }
+      .popup-head { display: flex; align-items: center; gap: 10px; }
+      .avatar {
+        width: 32px; height: 32px; border-radius: 8px; flex: none; display: grid; place-items: center;
+        color: #fff; font-weight: 800; font-size: 12px;
+      }
+      .avatar.lg { width: 36px; height: 36px; border-radius: 10px; font-size: 13px; }
+      .popup-name { font-weight: 800; font-size: 15px; line-height: 1.25; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .popup-lane { font-size: 12px; font-weight: 600; }
+      .prio-chip {
+        font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+        background: #ffb020; color: #241a20; border-radius: 999px; padding: 2px 8px;
+      }
+      .popup-close {
+        margin-left: auto; flex: none; width: 28px; height: 28px; display: grid; place-items: center;
+        border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--dim); cursor: pointer;
+      }
+      .popup-close:hover { color: var(--text); }
+      .popup-act { margin: 8px 0 0; font-size: 13px; color: var(--ink-soft); }
+      .popup-meta { margin: 6px 0 0; font-size: 11.5px; color: var(--dim); font-family: var(--font-mono); }
+      .legend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; font-size: 12px; color: var(--dim); font-family: var(--font-mono); }
+      .legend .li { display: inline-flex; align-items: center; gap: 6px; }
+      .legend .sw { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+      .legend .hint { margin-left: auto; }
+
+      /* ---------- status badge ---------- */
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; position: relative; animation: vo-pulse 2.2s ease-in-out infinite; }
+      .dot::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid currentColor; opacity: 0; animation: vo-ping 2.2s cubic-bezier(0,0,.2,1) infinite; }
+      @keyframes vo-pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+      @keyframes vo-ping { 0% { transform: scale(.55); opacity: .75; } 70%,100% { transform: scale(1.6); opacity: 0; } }
+      .status-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 4px 11px 4px 9px; }
+      .status-badge.kerja { color: var(--green); background: var(--green-soft); }
+      .status-badge.nyantai { color: var(--amber); background: var(--amber-soft); }
+      .status-badge.scheduling { color: var(--blue); background: var(--blue-soft); }
+
+      /* ---------- sections & cards ---------- */
+      .section-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+      .section-head h2 { margin: 0; font-size: clamp(22px, 3.2vw, 30px); font-weight: 800; letter-spacing: -0.02em; }
+      .section-head .sub { color: var(--dim); font-size: 14px; }
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+      .card h3 { margin: 0 0 8px; font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+      .card .small { font-size: 13px; color: var(--dim); margin: 0 0 8px; }
+
+      .chip-btn {
+        font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-strong);
+        border-radius: 999px; padding: 7px 14px; background: var(--surface); color: var(--ink-soft);
+        transition: background .15s, color .15s, border-color .15s, transform .12s ease;
+      }
+      .chip-btn:hover { color: var(--text); }
+      .chip-btn:active { transform: scale(.96); }
+      .chip-btn.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+      .chip-btn .n { font-family: var(--font-mono); font-size: 11px; opacity: .65; margin-left: 5px; }
+      .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+
+      .mini-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      @media (min-width: 480px) { .mini-grid { grid-template-columns: 1fr 1fr; } }
+      @media (min-width: 1024px) { .mini-grid { grid-template-columns: 1fr 1fr 1fr; } }
+      .bot-card {
+        text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 14px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; width: 100%; color: var(--text);
+        animation: vo-rise .55s cubic-bezier(.22,.9,.3,1) backwards; animation-delay: calc(var(--i) * 60ms);
+        transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .18s ease, opacity .2s ease;
+      }
+      .bot-card:hover {
+        transform: translateY(-5px); border-color: var(--border-strong);
+        box-shadow: 0 14px 28px -14px rgba(23,26,30,.35),
+          0 0 0 1px color-mix(in srgb, var(--bot, #888) 45%, transparent),
+          0 0 22px -6px color-mix(in srgb, var(--bot, #888) 40%, transparent);
+      }
+      .bot-card.pop { animation: vo-cardpop .5s cubic-bezier(.22,.9,.3,1) backwards; animation-delay: calc(var(--j, 0) * 55ms); }
+      .bot-card.selected { border-color: var(--accent); }
+      .bot-card.dimmed { opacity: .45; }
+      @keyframes vo-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+      @keyframes vo-cardpop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+      .mini-head { display: flex; align-items: center; gap: 10px; }
+      .mini-name { display: block; font-weight: 800; font-size: 15px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .mini-lane { display: block; font-size: 11.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .mini-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .mini-updated { font-size: 11px; color: var(--dim); font-family: var(--font-mono); }
+      .mini-act { font-size: 12px; color: var(--ink-soft); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+      .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (min-width: 1024px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+      .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+      .stat .v { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+      .stat .c { font-size: 12.5px; color: var(--ink-soft); margin-top: 6px; }
+
+      /* ---------- token tab ---------- */
+      .pill-label {
+        display: inline-block; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: .1em;
+        text-transform: uppercase; background: var(--accent); color: #fff; border-radius: 999px; padding: 5px 11px;
+      }
+      .token-list { list-style: none; margin: 0; padding: 0; }
+      .token-list li { padding: 12px 0; border-top: 1px dashed var(--border); }
+      .token-list li:first-child { border-top: 0; }
+      .token-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-size: 14px; }
+      .token-row .sw { width: 9px; height: 9px; border-radius: 3px; flex: none; align-self: center; }
+      .token-row .nm { font-weight: 700; width: 64px; flex: none; }
+      .token-row .tot { margin-left: auto; font-weight: 800; font-variant-numeric: tabular-nums; font-size: 15px; }
+      .token-row .tot span { font-weight: 600; color: var(--dim); font-size: 12px; }
+      .token-bar { margin-top: 8px; height: 12px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+      .token-bar .fill { height: 100%; display: flex; }
+      .token-io { margin-top: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+      .legend-io { display: inline-flex; align-items: center; gap: 16px; font-size: 12.5px; color: var(--ink-soft); }
+      .legend-io .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 6px; background: var(--ink-soft); vertical-align: -1px; }
+      .legend-io .sw.out { opacity: .4; }
+
+      .report-list { list-style: none; margin: 0; padding: 0; }
+      .report-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 0; border-top: 1px dashed var(--border); font-size: 14px; }
+      .report-list li:first-child { border-top: 0; }
+      .report-list .sw { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+      .report-list .nm { font-weight: 700; width: 64px; flex: none; }
+      .report-list .act { color: var(--ink-soft); flex: 1; min-width: 0; }
+      .report-list .tm { font-family: var(--font-mono); font-size: 12px; color: var(--dim); flex: none; }
+      @media (max-width: 639px) { .report-list .act { flex-basis: 100%; padding-left: 21px; } }
+
+      /* ---------- routing tab ---------- */
+      .flow { display: grid; gap: 14px; align-items: stretch; margin-bottom: 16px; }
+      @media (min-width: 768px) { .flow { grid-template-columns: 1fr auto 1.3fr auto 1fr; } }
+      .flow .step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+      .flow .step.hero { border: 1.5px solid var(--text); }
+      .flow .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+      .flow .t { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+      .flow p { margin: 5px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+      .flow .arrow { display: grid; place-items: center; color: var(--dim); }
+      @media (max-width: 767px) { .flow .arrow { transform: rotate(90deg); padding: 2px 0; } }
+      .route-grid { display: grid; gap: 10px; }
+      @media (min-width: 640px) { .route-grid { grid-template-columns: 1fr 1fr; } }
+      @media (min-width: 1024px) { .route-grid { grid-template-columns: 1fr 1fr 1fr; } }
+      .route-item { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+      .route-item .topic { font-weight: 700; }
+      .route-item .arr { color: var(--dim); flex: none; }
+      .route-item .who { margin-left: auto; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; }
+      .route-item .who .sw { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+      .callout {
+        margin-top: 16px; border-radius: var(--radius); padding: 20px; background: var(--accent-soft);
+        border: 1px solid var(--accent); display: flex; gap: 16px; align-items: flex-start;
+      }
+      @media (max-width: 639px) { .callout { flex-direction: column; } }
+      .callout h3 { margin: 0; font-size: 17px; font-weight: 800; }
+      .callout p { margin: 5px 0 0; font-size: 14.5px; color: var(--ink-soft); }
+      .rules-grid { display: grid; gap: 12px; margin-top: 16px; }
+      @media (min-width: 768px) { .rules-grid { grid-template-columns: 1fr 1fr; } }
+      .rule { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; display: flex; gap: 14px; }
+      .rule .num { font-family: var(--font-mono); font-weight: 600; font-size: 13px; width: 30px; height: 30px; border-radius: 9px; flex: none; border: 1px solid var(--border-strong); display: grid; place-items: center; color: var(--ink-soft); }
+      .rule h4 { margin: 2px 0 4px; font-size: 15.5px; font-weight: 800; }
+      .rule p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
+
+      /* ---------- aturan tab ---------- */
+      .front-door { border: 1.5px solid var(--text); border-radius: 18px; background: var(--surface); padding: 22px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; box-shadow: var(--shadow); }
+      .front-door .m-badge { width: 58px; height: 58px; border-radius: 16px; flex: none; background: var(--text); color: var(--surface); display: grid; place-items: center; font-weight: 900; font-size: 22px; }
+      .front-door h3 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+      .front-door p { margin: 4px 0 0; color: var(--ink-soft); font-size: 15px; max-width: 640px; }
+      .outline-chip { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; border: 1px solid var(--border-strong); border-radius: 999px; padding: 7px 13px; color: var(--ink-soft); }
+      .two-col { display: grid; gap: 14px; margin-top: 16px; }
+      @media (min-width: 768px) { .two-col { grid-template-columns: 1.2fr 1fr; } }
+      .steps { list-style: none; margin: 0; padding: 0; }
+      .steps li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px dashed var(--border); font-size: 14.5px; color: var(--ink-soft); }
+      .steps li:first-child { border-top: 0; padding-top: 0; }
+      .steps .n { font-family: var(--font-mono); font-size: 12px; font-weight: 600; width: 24px; height: 24px; border-radius: 8px; flex: none; background: var(--surface-2); display: grid; place-items: center; color: var(--text); }
+      .kv { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; font-size: 14.5px; margin: 0; }
+      .kv dt { color: var(--dim); font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 3px; }
+      .kv dd { margin: 0; color: var(--ink-soft); }
+      .logbox { border-top: 1px dashed var(--border); padding-top: 14px; margin-top: 14px; font-size: 14px; color: var(--ink-soft); }
+      .logbox .k { font-family: var(--font-mono); font-size: 12px; color: var(--dim); letter-spacing: .06em; text-transform: uppercase; }
+      .logbox p { margin: 6px 0 0; }
+
+      /* ---------- debug tab ---------- */
+      .feed { list-style: none; margin: 0; padding: 0; }
+      .feed li { display: flex; gap: 12px; align-items: baseline; padding: 10px 0; border-top: 1px dashed var(--border); font-size: 14.5px; color: var(--ink-soft); }
+      .feed li:first-child { border-top: 0; }
+      .feed .ts { font-family: var(--font-mono); font-size: 12px; color: var(--dim); white-space: nowrap; flex: none; }
+      .feed .rel { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--dim); white-space: nowrap; flex: none; padding-left: 10px; }
+      .feed li.fresh { animation: vo-feedin .5s cubic-bezier(.22,.9,.3,1) backwards; }
+      @keyframes vo-feedin { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+      /* ---------- deploy kit ---------- */
+      .deploy { margin-top: 48px; border: 1.5px solid var(--text); border-radius: 18px; background: var(--surface); padding: 22px; box-shadow: var(--shadow); }
+      .deploy h2 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+      .deploy > p { margin: 6px 0 0; color: var(--ink-soft); font-size: 14.5px; max-width: 720px; }
+      .deploy-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+      .btn {
+        font-size: 13.5px; font-weight: 700; cursor: pointer; border-radius: 999px; padding: 10px 18px;
+        border: 1.5px solid var(--text); background: var(--text); color: var(--bg);
+        transition: transform .12s ease, opacity .15s;
+      }
+      .btn:active { transform: scale(.97); }
+      .btn.ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
+      .btn.ghost:hover { border-color: var(--text); }
+      .deploy ol { margin: 16px 0 0; padding-left: 20px; color: var(--ink-soft); font-size: 14px; }
+      .deploy ol li { margin-top: 6px; }
+      .deploy code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface-2); border-radius: 6px; padding: 1px 6px; }
+      .repo-desc {
+        margin-top: 16px; border: 1px dashed var(--border-strong); border-radius: 12px; padding: 12px 14px;
+        font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft); overflow-wrap: anywhere;
+      }
+      .repo-desc .k { display: block; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+      .copied-note { font-size: 12.5px; color: var(--green); font-weight: 700; min-height: 18px; margin-top: 8px; }
+
+      footer.foot { margin-top: 64px; border-top: 1px solid var(--border); padding-top: 18px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--dim); }
+
+      .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1); }
+      .reveal.in { opacity: 1; transform: none; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .bot-card, .bot-card.pop, .feed li.fresh, .bot-popup { animation: none; }
+        .dot, .dot::after { animation: none; }
+        .bot-card:hover { transform: none; }
+        .chip-btn:active, .btn:active, .vo-tab:active { transform: none; }
+        .reveal { opacity: 1; transform: none; transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div class="top-row">
+          <div class="brand">
+            <span class="vo-logo" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+            <div style="min-width:0">
+              <h1 class="font-pixel">VIRTUAL OFFICE<span class="demo-chip">Showcase</span></h1>
+              <p class="brand-sub">kantor tim bot · 9 meja · versi publik, data demo</p>
+            </div>
+          </div>
+          <div class="clock-card" aria-label="Jam kantor WIB">
+            <div>
+              <div class="clock-label">Jam kantor · WIB</div>
+              <div class="clock-time" id="clock">--:--:--</div>
+            </div>
+            <div class="clock-date" id="clock-date"></div>
+          </div>
+        </div>
+
+        <div class="demo-banner" role="note">
+          <span class="tag">Data demo</span>
+          <span><strong>Ini versi showcase untuk publik.</strong> Tampilan, sprite, dan animasinya sama persis dengan kantor aslinya — tapi semua status, aktivitas, dan angka token di halaman ini adalah <strong>data contoh</strong>, bukan data live. Versi aslinya bersifat privat dan ter-update otomatis.</span>
+        </div>
+
+        <nav class="tabs" role="tablist" aria-label="Panel kantor" id="tabs">
+          <button type="button" class="vo-tab active" role="tab" id="tab-office" aria-selected="true" aria-controls="panel-office" data-tab="office">Office</button>
+          <button type="button" class="vo-tab" role="tab" id="tab-token" aria-selected="false" aria-controls="panel-token" data-tab="token">Token usage</button>
+          <button type="button" class="vo-tab" role="tab" id="tab-routing" aria-selected="false" aria-controls="panel-routing" data-tab="routing">Routing</button>
+          <button type="button" class="vo-tab" role="tab" id="tab-aturan" aria-selected="false" aria-controls="panel-aturan" data-tab="aturan">Aturan</button>
+          <button type="button" class="vo-tab" role="tab" id="tab-debug" aria-selected="false" aria-controls="panel-debug" data-tab="debug">Debug</button>
+        </nav>
+      </header>
+
+      <!-- ================= OFFICE ================= -->
+      <main class="panel" role="tabpanel" id="panel-office" aria-labelledby="tab-office">
+        <div class="scene-wrap" id="scene-wrap">
+          <div class="scene-frame">
+            <canvas id="scene" width="720" height="392" role="img" aria-label="Kantor pixel-art top-down: sembilan meja, satu untuk tiap bot, dengan sprite yang beranimasi mengikuti status demo masing-masing."></canvas>
+          </div>
+          <div id="hit-layer"></div>
+          <div id="popup-slot"></div>
+        </div>
+        <div class="legend">
+          <span class="li"><span class="sw" style="background:#3ecf8e"></span> kerja = ngetik</span>
+          <span class="li"><span class="sw" style="background:#e5b95c"></span> nyantai = Zzz</span>
+          <span class="li"><span class="sw" style="background:#6db3ec"></span> terjadwal = jam</span>
+          <span class="hint">arahkan / klik sprite buat info bot</span>
+        </div>
+
+        <section aria-label="Panel agen" style="margin-top:32px">
+          <div class="section-head" style="margin-bottom:14px">
+            <h2 style="font-size:20px">Panel agen</h2>
+            <span class="sub" style="font-size:13px">Klik kartu buat menyorot mejanya di scene.</span>
+          </div>
+          <div class="filters" role="group" aria-label="Filter tim" id="filters"></div>
+          <div class="mini-grid" id="mini-grid"></div>
+        </section>
+      </main>
+
+      <!-- ================= TOKEN ================= -->
+      <main class="panel" role="tabpanel" id="panel-token" aria-labelledby="tab-token" hidden>
+        <div class="section-head">
+          <h2>Token usage</h2>
+          <span class="sub">Pemakaian token per bot — 24 jam terakhir, rolling. Angka demo.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+          <span class="pill-label">24 jam terakhir, rolling · data demo</span>
+          <span class="legend-io" aria-hidden="true">
+            <span><span class="sw"></span>Masuk (input)</span>
+            <span><span class="sw out"></span>Keluar (output)</span>
+          </span>
+        </div>
+        <div class="stat-grid" style="margin-top:16px" id="token-stats"></div>
+        <div class="card reveal" style="margin-top:16px">
+          <h3>Pemakaian token per bot</h3>
+          <p class="small">Total + rincian masuk/keluar, jendela 24 jam terakhir (rolling). Bar terpanjang = pemakai terbesar.</p>
+          <ul class="token-list" id="token-list"></ul>
+        </div>
+        <div class="card reveal" style="margin-top:16px">
+          <h3>Laporan status terakhir per bot</h3>
+          <ul class="report-list" id="report-list"></ul>
+        </div>
+      </main>
+
+      <!-- ================= ROUTING ================= -->
+      <main class="panel" role="tabpanel" id="panel-routing" aria-labelledby="tab-routing" hidden>
+        <div class="section-head">
+          <h2>Routing plan</h2>
+          <span class="sub">Request masuk satu pintu, keluar ke jalur yang benar.</span>
+        </div>
+        <div class="flow" aria-label="Alur request">
+          <div class="step reveal">
+            <div class="k">Langkah 1</div>
+            <div class="t">Request masuk</div>
+            <p>Pertanyaan, tugas, atau ide — semuanya mulai dari main chat.</p>
+          </div>
+          <div class="arrow" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="step hero reveal">
+            <div class="k">Langkah 2 · Triage</div>
+            <div class="t">mimiw — pintu depan</div>
+            <p>Dipilah: jalur jelas diteruskan ke spesialis; obrolan umum, berita, dan hal lintas-jalur tetap di sini.</p>
+          </div>
+          <div class="arrow" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="step reveal">
+            <div class="k">Langkah 3</div>
+            <div class="t">Spesialis mengerjakan</div>
+            <p>Tiap bot mengerjakan hanya jalurnya — batas jalurnya tertulis di tab Aturan.</p>
+          </div>
+        </div>
+        <div class="route-grid" id="route-grid"></div>
+        <div class="callout reveal">
+          <span class="pill-label" style="flex:none;margin-top:2px">Aturan lapor dulu</span>
+          <div>
+            <h3>Mau bikin sesuatu? Lapor ke timnya sebelum bikin.</h3>
+            <p>Setiap mau membuat sesuatu, laporkan dulu ke tim yang sesuai <strong style="color:var(--text)">sebelum</strong> dibuat, biar mereka yang membuat — jangan dibuat sendiri di main chat. Foto → <strong style="color:var(--text)">Jepret</strong>, video → <strong style="color:var(--text)">Klip</strong>, website → <strong style="color:var(--text)">Laman</strong>.</p>
+          </div>
+        </div>
+        <div class="rules-grid" id="rules-grid"></div>
+      </main>
+
+      <!-- ================= ATURAN ================= -->
+      <main class="panel" role="tabpanel" id="panel-aturan" aria-labelledby="tab-aturan" hidden>
+        <div class="section-head">
+          <h2>Aturan kantor &amp; log</h2>
+          <span class="sub">Cara tim ini dijaga tetap rapi.</span>
+        </div>
+        <div class="front-door reveal">
+          <div class="m-badge" aria-hidden="true">m</div>
+          <div style="min-width:240px;flex:1">
+            <h3>Pintu depan: mimiw — main chat</h3>
+            <p>Semua request masuk lewat sini. mimiw memilah dan meneruskan ke spesialis sesuai jalurnya. Obrolan umum, berita &amp; briefing harian, hal lintas-jalur, dan semua yang belum jelas jalurnya tetap ditangani di pintu depan.</p>
+          </div>
+          <span class="outline-chip">Triage · Semua request</span>
+        </div>
+        <div class="two-col">
+          <div class="card reveal">
+            <h3>Cara menambah bot baru</h3>
+            <ol class="steps">
+              <li><span class="n">1</span><span><strong style="color:var(--text)">Pemilik meminta / menyetujui dulu.</strong> Tanpa itu, tidak ada bot baru.</span></li>
+              <li><span class="n">2</span><span><strong style="color:var(--text)">mimiw membuat chat khusus</strong> + brief persona (berlaku hanya di chat itu).</span></li>
+              <li><span class="n">3</span><span><strong style="color:var(--text)">Didaftarkan</strong> di dokumen roster tim.</span></li>
+              <li><span class="n">4</span><span><strong style="color:var(--text)">Cek tabrakan jalur</strong> dengan roster yang ada sebelum dinyatakan aktif.</span></li>
+            </ol>
+          </div>
+          <div class="card reveal">
+            <h3>Review tim</h3>
+            <dl class="kv">
+              <dt>Jadwal</dt>
+              <dd>Tiap <strong style="color:var(--text)">Minggu ±20.00 WIB</strong>, plus on-demand kapan pun pemilik bilang “review tim”.</dd>
+              <dt>Aturan sakral</dt>
+              <dd>Tidak ada bot yang di-rename, dihapus, atau digabung tanpa persetujuan eksplisit pemilik.</dd>
+              <dt>Prioritas</dt>
+              <dd>Semua penting — <strong style="color:var(--text)">Aman paling penting</strong>.</dd>
+            </dl>
+            <div class="logbox">
+              <span class="k">Log review #1 — 17 Okt 2026</span>
+              <p>Review terawasi bareng pemilik. 9 bot terverifikasi aktif, tidak ada perubahan roster. Check-in mingguan dipasang. Tambahan pasca-review: aturan “lapor dulu sebelum bikin” (foto → Jepret, video → Klip, website → Laman).</p>
+            </div>
+          </div>
+        </div>
+        <p style="color:var(--dim);font-size:14px;margin-top:20px">Semua bot sakral — tidak ada rename, hapus, atau gabung tanpa persetujuan pemilik. Job desc &amp; batas jalur tiap bot ada di popup sprite dan panel agen.</p>
+      </main>
+
+      <!-- ================= DEBUG ================= -->
+      <main class="panel" role="tabpanel" id="panel-debug" aria-labelledby="tab-debug" hidden>
+        <div class="section-head">
+          <h2>Debug</h2>
+          <span class="sub">Umpan aktivitas &amp; sesi — di versi showcase ini isinya data demo + event sesi kamu di halaman ini.</span>
+        </div>
+        <div class="two-col" style="margin-top:0">
+          <div class="card reveal">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px">
+              <h3 style="margin:0">Umpan aktivitas</h3>
+              <span class="status-badge kerja"><span class="dot"></span>Demo</span>
+            </div>
+            <ul class="feed" id="feed"></ul>
+          </div>
+          <div class="card reveal">
+            <h3>Sesi langsung</h3>
+            <dl class="kv">
+              <dt>Jam WIB</dt>
+              <dd id="dbg-clock">—</dd>
+              <dt>Sesi berjalan</dt>
+              <dd id="dbg-uptime" style="font-variant-numeric:tabular-nums">00:00:00</dd>
+              <dt>Bot aktif</dt>
+              <dd><strong style="color:var(--text)">9 / 9</strong> — semua jalur terpantau</dd>
+              <dt>Snapshot demo</dt>
+              <dd id="dbg-snap">—</dd>
+              <dt>Sumber data</dt>
+              <dd style="font-family:var(--font-mono);font-size:13px">data demo (statis, di dalam file ini)</dd>
+            </dl>
+            <button type="button" class="chip-btn" id="btn-refresh" aria-label="Muat ulang status demo" style="margin-top:20px;padding:8px 15px;font-size:13.5px">Muat ulang status</button>
+          </div>
+        </div>
+        <div class="stat-grid" style="margin-top:16px">
+          <div class="stat"><div class="v" data-count="9">0</div><div class="c">Bot aktif — terverifikasi di review tim #1</div></div>
+          <div class="stat"><div class="v" data-count="9">0</div><div class="c">Bot tampil di scene (data demo)</div></div>
+          <div class="stat"><div class="v" id="stat-kerja" data-count="0">0</div><div class="c">Bot lagi kerja di snapshot demo</div></div>
+          <div class="stat"><div class="v">Minggu</div><div class="c">Review tim mingguan, ±20.00 WIB</div></div>
+        </div>
+      </main>
+
+      <!-- ================= DEPLOY KIT ================= -->
+      <section class="deploy" aria-label="Deploy kit GitHub dan Vercel">
+        <h2>Deploy kit — GitHub + Vercel</h2>
+        <p>Halaman ini satu file <code style="font-family:var(--font-mono);font-size:12.5px;background:var(--surface-2);border-radius:6px;padding:1px 6px">index.html</code> mandiri — tanpa build step, tanpa backend. Download paketnya, upload ke GitHub, deploy ke Vercel, jadi link publik yang bisa dibagikan ke siapa pun.</p>
+        <div class="deploy-actions">
+          <button type="button" class="btn" id="dl-html">Download index.html</button>
+          <button type="button" class="btn ghost" id="dl-readme">Download README.md</button>
+          <button type="button" class="btn ghost" id="cp-desc">Copy deskripsi repo</button>
+        </div>
+        <div class="copied-note" id="copy-note" role="status"></div>
+        <ol>
+          <li>Di <strong>github.com</strong> → <strong>New repository</strong> → nama <code>virtual-office-showcase</code> → <strong>Public</strong> → Create.</li>
+          <li>Upload <code>index.html</code> + <code>README.md</code> hasil download di atas (tombol <strong>Add file → Upload files</strong>), lalu Commit.</li>
+          <li>Paste deskripsi repo dari tombol copy ke kolom <strong>About</strong> di repo (ikon gear).</li>
+          <li>Di <strong>vercel.com</strong> → <strong>Add New → Project</strong> → pilih repo tadi → <strong>Deploy</strong>. Link publiknya jadi <code>virtual-office-showcase.vercel.app</code>.</li>
+        </ol>
+        <div class="repo-desc">
+          <span class="k">Deskripsi repo GitHub</span>
+          <span id="repo-desc-text">Virtual Office Showcase — kantor pixel-art top-down berisi 9 bot AI dengan sprite hidup (kerja = ngetik, nyantai = Zzz, terjadwal = jam), panel agen, token usage, routing plan &amp; aturan tim. Satu file HTML statis, data demo, siap deploy ke Vercel.</span>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <span>Virtual Office Showcase — tim bot, versi publik</span>
+        <span>Roster &amp; routing dari dokumen tim · review #1, 17 Oktober 2026 · data demo</span>
+      </footer>
+    </div>
+
+    <script>
+    "use strict";
+    /* ================================================================
+       DATA DEMO — contoh statis untuk tampilan publik.
+       Bukan data live: tidak ada fetch, tidak ada backend.
+       Waktu "diperbarui" dihitung mundur dari saat halaman dibuka.
+       ================================================================ */
+    var NOW0 = Date.now();
+    function ago(min) { return NOW0 - min * 60000; }
+
+    var BOTS = [
+      { id:"aman", name:"Aman", mono:"Am", lane:"Crypto / NFT / Web3", color:"#0e7a5f", cat:"crypto", featured:true,
+        status:"kerja", activity:"Memeriksa keamanan kontrak & eligibility mint terbaru.", updated:ago(4),
+        tokens:{ input:48210, output:9310, total:57520 },
+        foot:"keamanan dulu sebelum cuan",
+        desc:'Semua info dan pengingat <strong>crypto, NFT, dan mint</strong> lewat Aman — tidak ada pengecualian. Verifikasi keamanan kontrak &amp; eligibility, eksekusi mint, dan memegang <strong>hak veto</strong> atas aman atau tidaknya sebuah mint.' },
+      { id:"bursa", name:"Bursa", mono:"Bu", lane:"Saham — Edukasi Fundamental", color:"#8a5a12", cat:"riset",
+        status:"nyantai", activity:"Istirahat — materi level berikutnya disiapkan besok.", updated:ago(26),
+        tokens:{ input:12840, output:3120, total:15960 },
+        foot:"kurikulum level 0–5",
+        desc:'Mengajar fundamental saham dari nol — laporan keuangan, rasio, valuasi — menuju target edukasi portofolio <strong>Rp1M</strong>. Blak-blakan, sabar, anti-hype.',
+        noTouch:'rekomendasi beli/jual, janji return.' },
+      { id:"klip", name:"Klip", mono:"Kl", lane:"Editor Video", color:"#b03a2e", cat:"kreatif",
+        status:"kerja", activity:"Merakit storyboard motion graphics project terbaru.", updated:ago(7),
+        tokens:{ input:66480, output:15230, total:81710 },
+        foot:"video → lapor ke Klip dulu",
+        desc:'Semua urusan <strong>video editing &amp; AI video</strong>: prompt, potong klip, rakit jadi video utuh. Feedback jujur walau pahit — yang penting hasilnya naik kelas.' },
+      { id:"uji", name:"Uji", mono:"Uj", lane:"VibeVibe Testnet", color:"#1f6fb2", cat:"crypto",
+        status:"kerja", activity:"Menjalankan ronde eksperimen sweeper di testnet.", updated:ago(11),
+        tokens:{ input:21930, output:4415, total:26345 },
+        foot:"testnet only",
+        desc:'Anak lab testnet: eksperimen script dan bot (termasuk sweeper) di jaringan <strong>testnet</strong>. Playful, eksperimental — dan selalu testnet.',
+        noTouch:'dana / key mainnet. Testnet only, titik.' },
+      { id:"cuit", name:"Cuit", mono:"Cu", lane:"X / Twitter", color:"#3d5a99", cat:"kreatif",
+        status:"scheduling", activity:"Draft postingan berikutnya menunggu approval.", updated:ago(18),
+        tokens:{ input:18460, output:5980, total:24440 },
+        foot:"draft dulu, posting belakangan",
+        desc:'Copywriting &amp; growth untuk akun X pemilik: draft postingan, strategi engagement, dan jalan menuju monetisasi Creator Revenue Sharing.',
+        noTouch:'posting tanpa approval pemilik.' },
+      { id:"laman", name:"Laman", mono:"La", lane:"Website", color:"#6d4fa1", cat:"kreatif",
+        status:"kerja", activity:"Menyiapkan versi showcase kantor ini buat publik.", updated:ago(2),
+        tokens:{ input:54120, output:11040, total:65160 },
+        foot:"website → lapor ke Laman dulu",
+        desc:'Yang membangun kantor ini. Semua urusan <strong>website</strong> — landing page, portofolio, web app, sampai deploy — dengan solusi klik-klik, tanpa terminal.' },
+      { id:"jepret", name:"Jepret", mono:"Je", lane:"Photo Editor", color:"#a05c17", cat:"kreatif",
+        status:"nyantai", activity:"Standby — belum ada antrean foto baru.", updated:ago(33),
+        tokens:{ input:9310, output:1875, total:11185 },
+        foot:"foto → lapor ke Jepret dulu",
+        desc:'Semua urusan <strong>foto</strong>: retouch portrait, ganti background, color grading, sampai foto profil. Pendapat jujur sebagai editor — kalau ada yang salah, dibilangin.' },
+      { id:"loot", name:"Loot", mono:"Lo", lane:"Gamer / WL", color:"#527a1e", cat:"crypto",
+        status:"kerja", activity:"Grinding quest allowlist & memantau raffle yang lagi jalan.", updated:ago(9),
+        tokens:{ input:31275, output:6230, total:37505 },
+        foot:"grind iya, mint bukan dia",
+        desc:'Tukang garap <strong>whitelist</strong>: grind Discord, quest Galxe/Zealy, testnet, raffle allowlist, dan airdrop. Bagian discovery &amp; grinding — bisa bedain hype dari peluang.',
+        noTouch:'eksekusi mint — itu jalur Aman.' },
+      { id:"gali", name:"Gali", mono:"Ga", lane:"Deep Research", color:"#0f766e", cat:"riset",
+        status:"scheduling", activity:"Riset berikutnya terjadwal — menunggu topik baru.", updated:ago(21),
+        tokens:{ input:39650, output:8745, total:48395 },
+        foot:"no source, no claim",
+        desc:'Riset mendalam yang <strong>terverifikasi sumber</strong>: conclusion-first, wajib cantumkan sumber, dan flag bias partisan / kepentingan berbayar. Tanpa sumber, tidak diklaim.' }
+    ];
+
+    var FILTERS = [
+      { key:"all", label:"Semua", n:9 },
+      { key:"crypto", label:"Crypto & Web3", n:3 },
+      { key:"kreatif", label:"Kreatif & Build", n:4 },
+      { key:"riset", label:"Edukasi & Riset", n:2 }
+    ];
+
+    var ROUTES = [
+      { topic:"Foto & retouch", who:"Jepret", color:"#a05c17" },
+      { topic:"Video & AI video", who:"Klip", color:"#b03a2e" },
+      { topic:"Website", who:"Laman", color:"#6d4fa1" },
+      { topic:"Crypto, NFT, mint", who:"Aman", color:"#0e7a5f" },
+      { topic:"Testnet", who:"Uji", color:"#1f6fb2" },
+      { topic:"WL grind & airdrop", who:"Loot", color:"#527a1e" },
+      { topic:"Belajar saham", who:"Bursa", color:"#8a5a12" },
+      { topic:"Konten X / Twitter", who:"Cuit", color:"#3d5a99" },
+      { topic:"Riset mendalam", who:"Gali", color:"#0f766e" }
+    ];
+
+    var RULES = [
+      { n:"1", title:"Mint & WL: dua tangan, satu keputusan", body:"Loot mengerjakan discovery & grinding (quest, allowlist). Aman memverifikasi keamanan dan mengeksekusi mint. Keputusan final aman atau tidak = Aman." },
+      { n:"2", title:"Konten X soal crypto: tulis Cuit, cek Aman", body:"Cuit menulis dan menjaga voice-nya. Sebelum publish, Aman mengecek fakta klaim crypto-nya." },
+      { n:"3", title:"Testnet vs mainnet: garis keras", body:"Uji hanya testnet. Segala yang menyentuh dana asli masuk jalur Aman, dengan aturan keamanan penuh." },
+      { n:"4", title:"Semua crypto lewat Aman", body:"Info, pengingat, dan keputusan crypto/NFT/mint dari jalur mana pun tetap disampaikan lewat Aman — bot prioritas kantor ini." }
+    ];
+
+    var STATUS_LABEL = { kerja:"Lagi kerja", nyantai:"Nyantai", scheduling:"Terjadwal" };
+
+    /* ---------------- helpers ---------------- */
+    var timeFmt = new Intl.DateTimeFormat("id-ID", { timeZone:"Asia/Jakarta", hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false });
+    var hmFmt = new Intl.DateTimeFormat("id-ID", { timeZone:"Asia/Jakarta", hour:"2-digit", minute:"2-digit", hour12:false });
+    var dateFmt = new Intl.DateTimeFormat("id-ID", { timeZone:"Asia/Jakarta", weekday:"long", day:"numeric", month:"long", year:"numeric" });
+    var numFmt = new Intl.NumberFormat("id-ID");
+    function wibTime(d) { return timeFmt.format(d).replace(/\./g, ":"); }
+    function wibHM(ts) { return hmFmt.format(new Date(ts)).replace(/\./g, ":"); }
+    function pad(n) { return n < 10 ? "0" + n : String(n); }
+    function relLabel(ts, nowMs) {
+      var s = Math.max(0, Math.round((nowMs - ts) / 1000));
+      if (s < 45) return "baru saja";
+      if (s < 90) return "1 mnt lalu";
+      var m = Math.round(s / 60);
+      if (m < 60) return m + " mnt lalu";
+      return Math.floor(m / 60) + " jam lalu";
+    }
+    function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function botById(id) { for (var i = 0; i < BOTS.length; i++) if (BOTS[i].id === id) return BOTS[i]; return null; }
+    function badgeHTML(bot) {
+      return '<span class="status-badge ' + bot.status + '"><span class="dot"></span>' + STATUS_LABEL[bot.status] + "</span>";
+    }
+
+    /* ================================================================
+       Pixel-art office scene — digambar pakai kode di canvas.
+       Scene logis 720 x 392, 3 x 3 meja sesuai urutan roster.
+       ================================================================ */
+    var SCENE_W = 720, SCENE_H = 392;
+    var DESK_CX = [120, 360, 600];
+    var DESK_TOP = [90, 184, 278];
+    var SKINS = ["#f0c08a","#e8b184","#c98a5e","#f0c08a","#d99e63","#e8b184","#8a5a34","#c98a5e","#f0c08a"];
+    var HAIRS = ["#241a20","#3a2415","#14100e","#54331a","#241a20","#0f0c1a","#2b2118","#3f2a14","#1d1a24"];
+    function deskPos(i) { return { cx: DESK_CX[i % 3], top: DESK_TOP[Math.floor(i / 3)] }; }
+    function shade(hex, amt) {
+      var n = parseInt(hex.slice(1), 16);
+      var rr = (n >> 16) & 255, gg = (n >> 8) & 255, bb = n & 255;
+      var t = amt < 0 ? 0 : 255, p = Math.abs(amt);
+      function f(c) { return Math.round((t - c) * p + c); }
+      return "rgb(" + f(rr) + "," + f(gg) + "," + f(bb) + ")";
+    }
+    function mulberry(seed) {
+      var a = seed;
+      return function () {
+        a |= 0; a = (a + 0x6d2b79f5) | 0;
+        var t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    function r(g, x, y, w, h, c) { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); }
+    function glow(g, x, y, rad, color, alpha) {
+      var grad = g.createRadialGradient(x, y, 0, x, y, rad);
+      grad.addColorStop(0, color); grad.addColorStop(1, "rgba(0,0,0,0)");
+      g.save(); g.globalAlpha = alpha; g.fillStyle = grad;
+      g.fillRect(x - rad, y - rad, rad * 2, rad * 2); g.restore();
+    }
+    var STARS = (function () {
+      var rnd = mulberry(42), out = [];
+      var wins = [[36, 14], [578, 14]];
+      for (var wi = 0; wi < wins.length; wi++) {
+        for (var k = 0; k < 14; k++) out.push({ x: wins[wi][0] + 4 + rnd() * 100, y: wins[wi][1] + 4 + rnd() * 34, ph: rnd() * Math.PI * 2 });
+      }
+      return out;
+    })();
+
+    function drawWindow(g, x, y, t, moon) {
+      r(g, x - 3, y - 3, 118, 48, "#0d0916");
+      r(g, x, y, 112, 42, "#0a1030");
+      r(g, x, y + 22, 112, 20, "#16224d");
+      for (var i = 0; i < STARS.length; i++) {
+        var s = STARS[i];
+        if (s.x >= x && s.x <= x + 112 && s.y >= y && s.y <= y + 42) {
+          g.save(); g.globalAlpha = 0.45 + 0.4 * Math.sin(t * 1.6 + s.ph);
+          r(g, s.x, s.y, 2, 2, "#dfe8ff"); g.restore();
+        }
+      }
+      if (moon) {
+        g.beginPath(); g.arc(x + 84, y + 13, 8, 0, Math.PI * 2); g.fillStyle = "#f7ead0"; g.fill();
+        r(g, x + 80, y + 9, 3, 3, "#e3d3ae"); r(g, x + 86, y + 15, 2, 2, "#e3d3ae");
+      }
+      r(g, x + 54, y, 4, 42, "#0d0916");
+      r(g, x, y + 19, 112, 4, "#0d0916");
+      r(g, x - 5, y + 42, 122, 4, "#17102a");
+    }
+
+    function drawRoom(g, t) {
+      r(g, 0, 0, SCENE_W, 58, "#241b38");
+      r(g, 0, 58, SCENE_W, 6, "#17102a");
+      r(g, 0, 56, SCENE_W, 2, "#3a2a55");
+      r(g, 0, 64, SCENE_W, SCENE_H - 64, "#46301d");
+      var rnd = mulberry(7), seams = [], rowI, sx;
+      for (rowI = 0; rowI < 21; rowI++) {
+        var rowSeams = []; sx = -20 - rnd() * 60;
+        while (sx < SCENE_W) { sx += 110 + rnd() * 60; rowSeams.push(sx); }
+        seams.push(rowSeams);
+      }
+      for (rowI = 0; rowI < 21; rowI++) {
+        var y = 64 + rowI * 16;
+        if (rowI % 2 === 0) r(g, 0, y, SCENE_W, 16, "#503623");
+        r(g, 0, y + 15, SCENE_W, 1, "rgba(0,0,0,0.35)");
+        for (var si = 0; si < seams[rowI].length; si++) r(g, seams[rowI][si], y, 2, 15, "rgba(0,0,0,0.28)");
+      }
+      r(g, 108, 206, 504, 158, "#3a2340");
+      r(g, 116, 214, 488, 142, "#432a4a");
+      r(g, 124, 222, 472, 126, "#3a2340");
+      drawWindow(g, 36, 14, t, false);
+      drawWindow(g, 578, 14, t, true);
+      var now = new Date(), cxC = 360, cyC = 34;
+      g.beginPath(); g.arc(cxC, cyC, 13, 0, Math.PI * 2); g.fillStyle = "#0f0a18"; g.fill();
+      g.beginPath(); g.arc(cxC, cyC, 10, 0, Math.PI * 2); g.fillStyle = "#efe6cf"; g.fill();
+      var hrA = ((now.getHours() % 12) + now.getMinutes() / 60) * (Math.PI / 6) - Math.PI / 2;
+      var mnA = (now.getMinutes() + now.getSeconds() / 60) * (Math.PI / 30) - Math.PI / 2;
+      g.strokeStyle = "#241a20"; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(cxC, cyC); g.lineTo(cxC + Math.cos(hrA) * 5, cyC + Math.sin(hrA) * 5); g.stroke();
+      g.lineWidth = 1;
+      g.beginPath(); g.moveTo(cxC, cyC); g.lineTo(cxC + Math.cos(mnA) * 8, cyC + Math.sin(mnA) * 8); g.stroke();
+      r(g, 196, 14, 44, 34, "#0d0916");
+      r(g, 199, 17, 38, 28, "#2c2145");
+      r(g, 205, 36, 5, 6, "#ff9f43");
+      r(g, 213, 31, 5, 11, "#3ecf8e");
+      r(g, 221, 25, 5, 17, "#6db3ec");
+      r(g, 468, 46, 56, 3, "#17102a");
+      var bookCols = ["#b03a2e","#1f6fb2","#527a1e","#b07d10","#6d4fa1"];
+      for (var bi = 0; bi < bookCols.length; bi++) r(g, 472 + bi * 9, 34 + (bi % 2) * 2, 6, 12 - (bi % 2) * 2, bookCols[bi]);
+      var lamps = [240, 480];
+      for (var li2 = 0; li2 < lamps.length; li2++) {
+        var lx = lamps[li2];
+        r(g, lx - 1, 0, 2, 20, "#0d0916");
+        r(g, lx - 11, 20, 22, 8, "#17102a");
+        r(g, lx - 7, 28, 14, 3, "#ffca7a");
+        glow(g, lx, 34, 64, "rgba(255,178,84,1)", 0.13 + 0.015 * Math.sin(t * 2.3 + lx));
+      }
+      var bulbCols = ["#ffb84d","#ff6b6b","#6be3ff","#b28dff"];
+      for (var b2 = 0; b2 < 15; b2++) {
+        var bx = 22 + b2 * 48;
+        g.save(); g.globalAlpha = 0.55 + 0.45 * Math.sin(t * 2 + b2 * 1.7);
+        r(g, bx, 60, 3, 4, bulbCols[b2 % 4]); g.restore();
+      }
+      r(g, 690, 218, 3, 74, "#0d0916");
+      r(g, 682, 204, 20, 14, "#2c1e3f");
+      r(g, 685, 218, 14, 4, "#ffca7a");
+      r(g, 684, 292, 16, 3, "#0d0916");
+      glow(g, 692, 214, 58, "rgba(255,178,84,1)", 0.15);
+      r(g, 14, 330, 18, 12, "#7a3b1e");
+      r(g, 12, 326, 22, 5, "#93502a");
+      var leaf = "#2e7d4f";
+      r(g, 16, 312, 4, 14, leaf);
+      r(g, 24, 308, 4, 18, shade(leaf, 0.15));
+      r(g, 9, 318, 4, 10, shade(leaf, -0.15));
+      r(g, 30, 316, 4, 12, leaf);
+      r(g, 8, 300, 58, 6, "#2c1e3f");
+      r(g, 12, 306, 4, 36, "#17102a");
+      r(g, 54, 306, 4, 36, "#17102a");
+      r(g, 16, 282, 26, 18, "#1d1526");
+      r(g, 20, 286, 18, 6, "#3ecf8e");
+      r(g, 24, 295, 6, 5, "#0d0916");
+      r(g, 48, 292, 7, 8, "#e8e2d2");
+    }
+
+    function drawDeskItem(g, kind, x, y, color) {
+      if (kind === 0) {
+        r(g, x, y + 3, 6, 5, "#93502a");
+        r(g, x + 1, y - 3, 2, 6, "#2e7d4f");
+        r(g, x + 4, y - 1, 2, 4, "#3da367");
+      } else if (kind === 1) {
+        r(g, x, y, 6, 7, color);
+        r(g, x + 6, y + 2, 2, 3, color);
+      } else {
+        r(g, x - 2, y + 4, 12, 3, "#e8e2d2");
+        r(g, x - 1, y + 1, 10, 3, "#b03a2e");
+      }
+    }
+
+    var sceneState = { selected: null, hovered: null };
+    function drawBot(g, bot, i, t) {
+      var pos = deskPos(i), cx = pos.cx, top = pos.top;
+      var deskY = top + 78, hy = top + 46;
+      var skin = SKINS[i % SKINS.length], hair = HAIRS[i % HAIRS.length], col = bot.color;
+      var st = bot.status;
+      if (sceneState.selected === bot.id) {
+        g.save(); g.strokeStyle = "#ff9f43"; g.lineWidth = 2;
+        g.setLineDash([5, 4]); g.lineDashOffset = -t * 12;
+        g.strokeRect(cx - 38, top + 30, 76, 88); g.restore();
+      } else if (sceneState.hovered === bot.id) {
+        g.save(); g.strokeStyle = "rgba(255,255,255,0.4)"; g.lineWidth = 1;
+        g.strokeRect(cx - 38, top + 30, 76, 88); g.restore();
+      }
+      r(g, cx - 34, deskY + 26, 68, 5, "rgba(0,0,0,0.28)");
+      var bounce = st === "kerja" ? Math.abs(Math.sin(t * 9 + i * 1.3)) * 1.4 : st === "scheduling" ? Math.sin(t * 2 + i) * 0.8 : 0;
+      var yo = st === "nyantai" ? 2 : -bounce;
+      var hx = st === "nyantai" ? 2 : 0;
+      r(g, cx - 14, hy + 12 + yo, 28, 18, "#241a30");
+      r(g, cx - 14, hy + 12 + yo, 28, 4, "#32234a");
+      r(g, cx - 11, hy + 17 + yo, 22, 14, col);
+      r(g, cx - 11, hy + 28 + yo, 22, 3, shade(col, -0.3));
+      r(g, cx - 3 + hx, hy + 13 + yo, 6, 5, shade(skin, -0.18));
+      r(g, cx - 8 + hx, hy + yo, 16, 15, skin);
+      r(g, cx - 8 + hx, hy + yo, 16, 5, hair);
+      r(g, cx - 8 + hx, hy + yo, 3, 9, hair);
+      r(g, cx + 5 + hx, hy + yo, 3, 9, hair);
+      if (st === "nyantai") {
+        r(g, cx - 5 + hx, hy + 9 + yo, 3, 1, "#241a20");
+        r(g, cx + 3 + hx, hy + 9 + yo, 3, 1, "#241a20");
+      } else {
+        r(g, cx - 5 + hx, hy + 8 + yo, 2, 3, "#241a20");
+        r(g, cx + 3 + hx, hy + 8 + yo, 2, 3, "#241a20");
+      }
+      if (bot.featured) {
+        var cy = hy - 6 + yo;
+        r(g, cx - 6 + hx, cy + 3, 12, 3, "#ffb020");
+        r(g, cx - 6 + hx, cy, 2, 3, "#ffb020");
+        r(g, cx - 1 + hx, cy, 2, 3, "#ffb020");
+        r(g, cx + 4 + hx, cy, 2, 3, "#ffb020");
+      }
+      r(g, cx - 30, deskY, 60, 5, "#8a5a33");
+      r(g, cx - 30, deskY, 60, 2, "#a9713f");
+      r(g, cx - 30, deskY + 5, 60, 13, "#6e4525");
+      r(g, cx - 28, deskY + 18, 4, 10, "#4c2f16");
+      r(g, cx + 24, deskY + 18, 4, 10, "#4c2f16");
+      drawDeskItem(g, i % 3, cx - 27, deskY - 8, col);
+      var monTop = deskY - 21;
+      r(g, cx - 13, monTop, 26, 20, "#14101d");
+      if (st === "kerja") {
+        r(g, cx - 11, monTop + 2, 22, 16, "#0d2f22");
+        glow(g, cx, monTop + 10, 24, "rgba(62,207,142,1)", 0.1);
+        var lineCols = ["#3ecf8e", "#2a9d6c", "#57e6a3"];
+        for (var li = 0; li < 3; li++) {
+          var lw = 8 + ((Math.floor(t * 3) + li * 5 + i * 3) % 12);
+          r(g, cx - 9, monTop + 4 + li * 5, lw, 2, lineCols[li % 3]);
+        }
+      } else if (st === "nyantai") {
+        r(g, cx - 11, monTop + 2, 22, 16, "#101623");
+        g.beginPath(); g.arc(cx + 5, monTop + 7, 3, 0, Math.PI * 2); g.fillStyle = "#8fa3c7"; g.fill();
+      } else {
+        r(g, cx - 11, monTop + 2, 22, 16, "#12233a");
+        r(g, cx - 9, monTop + 4, 18, 4, "#e8e2d2");
+        r(g, cx - 9, monTop + 10, 4, 4, "#6db3ec");
+        r(g, cx - 3, monTop + 10, 4, 4, "#3a5a80");
+        r(g, cx + 3, monTop + 10, 4, 4, "#3a5a80");
+      }
+      r(g, cx - 2, deskY - 1, 4, 2, "#14101d");
+      r(g, cx - 10, deskY - 6, 20, 4, "#221a2e");
+      var tapL = st === "kerja" ? (Math.floor(t * 6 + i) % 2 === 0 ? 0 : -1) : 0;
+      var tapR = st === "kerja" ? (Math.floor(t * 6 + i) % 2 === 0 ? -1 : 0) : 0;
+      r(g, cx - 8, deskY - 5 + tapL, 4, 3, skin);
+      r(g, cx + 4, deskY - 5 + tapR, 4, 3, skin);
+      if (st === "nyantai") {
+        for (var k = 0; k < 3; k++) {
+          var ph = (t * 0.4 + k / 3 + i * 0.17) % 1;
+          g.save(); g.globalAlpha = Math.sin(ph * Math.PI) * 0.95;
+          g.font = "700 " + Math.round(6 + ph * 5) + "px 'IBM Plex Mono', monospace";
+          g.fillStyle = "#cfd8ff"; g.textAlign = "left";
+          g.fillText("Z", cx + 15 + ph * 8, hy - 2 - ph * 16); g.restore();
+        }
+      } else if (st === "scheduling") {
+        var bx = cx + 18, byy = hy - 8;
+        g.beginPath(); g.arc(bx, byy, 7, 0, Math.PI * 2); g.fillStyle = "#f4ead2"; g.fill();
+        g.lineWidth = 1.5; g.strokeStyle = "#14101f"; g.stroke();
+        var ma = t * 0.6 + i;
+        var ha = -Math.PI / 2 + 2.1 + Math.sin(t * 0.3 + i) * 0.2;
+        g.strokeStyle = "#241a20"; g.lineWidth = 1;
+        g.beginPath(); g.moveTo(bx, byy); g.lineTo(bx + Math.cos(ma) * 5, byy + Math.sin(ma) * 5); g.stroke();
+        g.beginPath(); g.moveTo(bx, byy); g.lineTo(bx + Math.cos(ha) * 3.5, byy + Math.sin(ha) * 3.5); g.stroke();
+      }
+      var plateW = 42;
+      r(g, cx - plateW / 2, deskY + 8, plateW, 11, bot.featured ? "#ffb020" : "rgba(10,6,18,0.85)");
+      var dotCol = st === "kerja" ? "#3ecf8e" : st === "nyantai" ? "#e5b95c" : "#6db3ec";
+      r(g, cx - plateW / 2 + 4, deskY + 11, 4, 4, dotCol);
+      g.font = "700 7px 'IBM Plex Mono', monospace"; g.textAlign = "center";
+      g.fillStyle = bot.featured ? "#241a20" : "#f2ecdf";
+      g.fillText(bot.name.toUpperCase(), cx + 3, deskY + 16);
+      g.textAlign = "left";
+    }
+
+    var canvas = document.getElementById("scene");
+    var g2 = canvas.getContext("2d");
+    function drawScene(ms) {
+      var t = ms / 1000;
+      g2.clearRect(0, 0, SCENE_W, SCENE_H);
+      drawRoom(g2, t);
+      for (var i = 0; i < BOTS.length; i++) drawBot(g2, BOTS[i], i, t);
+    }
+    if (reduced) { drawScene(1200); }
+    else {
+      var loop = function (ms) { drawScene(ms); requestAnimationFrame(loop); };
+      requestAnimationFrame(loop);
+    }
+
+    /* ---------------- hit areas + popup ---------------- */
+    var hitLayer = document.getElementById("hit-layer");
+    var popupSlot = document.getElementById("popup-slot");
+    BOTS.forEach(function (bot, i) {
+      var pos = deskPos(i);
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "scene-hit"; b.dataset.bot = bot.id;
+      b.style.left = ((pos.cx - 38) / SCENE_W * 100) + "%";
+      b.style.top = ((pos.top + 24) / SCENE_H * 100) + "%";
+      b.style.width = (76 / SCENE_W * 100) + "%";
+      b.style.height = (88 / SCENE_H * 100) + "%";
+      b.setAttribute("aria-label", "Info " + bot.name + " — " + STATUS_LABEL[bot.status] + " (data demo)");
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("mouseenter", function () { sceneState.hovered = bot.id; showPopup(bot.id, false); });
+      b.addEventListener("mouseleave", function () { sceneState.hovered = null; if (sceneState.selected !== bot.id) hidePopup(); });
+      b.addEventListener("focus", function () { sceneState.hovered = bot.id; showPopup(bot.id, false); });
+      b.addEventListener("blur", function () { sceneState.hovered = null; if (sceneState.selected !== bot.id) hidePopup(); });
+      b.addEventListener("click", function () {
+        if (sceneState.selected === bot.id) { sceneState.selected = null; hidePopup(); syncPressed(); }
+        else { sceneState.selected = bot.id; showPopup(bot.id, true); syncPressed(); }
+      });
+      hitLayer.appendChild(b);
+    });
+    function syncPressed() {
+      var btns = hitLayer.querySelectorAll(".scene-hit");
+      btns.forEach(function (el) { el.setAttribute("aria-pressed", el.dataset.bot === sceneState.selected ? "true" : "false"); });
+      var cards = document.querySelectorAll(".bot-card");
+      cards.forEach(function (el) { el.classList.toggle("selected", el.dataset.bot === sceneState.selected); });
+    }
+    function showPopup(id, pinned) {
+      var bot = botById(id); if (!bot) return;
+      var idx = BOTS.indexOf(bot), pos = deskPos(idx);
+      var col = idx % 3, row = Math.floor(idx / 3), above = row > 0;
+      var tx = col === 0 ? "-14%" : col === 2 ? "-86%" : "-50%";
+      popupSlot.innerHTML =
+        '<div class="bot-popup" role="dialog" aria-label="Info ' + esc(bot.name) + '" style="left:' + (pos.cx / SCENE_W * 100) + "%;top:" + ((above ? pos.top + 22 : pos.top + 122) / SCENE_H * 100) + "%;transform:translate(" + tx + "," + (above ? "-100%" : "0") + ')">' +
+          '<div class="popup-head">' +
+            '<span class="avatar" style="background:' + bot.color + '" aria-hidden="true">' + bot.mono + "</span>" +
+            '<div style="min-width:0"><div class="popup-name">' + esc(bot.name) + (bot.featured ? '<span class="prio-chip">Prioritas</span>' : "") + "</div>" +
+            '<div class="popup-lane" style="color:' + bot.color + '">' + esc(bot.lane) + "</div></div>" +
+            '<button type="button" class="popup-close" id="popup-close" aria-label="Tutup info ' + esc(bot.name) + '">✕</button>' +
+          "</div>" +
+          '<div style="margin-top:10px">' + badgeHTML(bot) + "</div>" +
+          '<p class="popup-act">' + esc(bot.activity) + "</p>" +
+          '<p class="popup-meta">data demo · diperbarui ' + wibHM(bot.updated) + " WIB</p>" +
+        "</div>";
+      var closeBtn = document.getElementById("popup-close");
+      if (closeBtn) closeBtn.addEventListener("click", function () { sceneState.selected = null; hidePopup(); syncPressed(); });
+      var pop = popupSlot.firstChild;
+      if (pop) {
+        pop.addEventListener("mouseenter", function () { sceneState.hovered = id; });
+        pop.addEventListener("mouseleave", function () { sceneState.hovered = null; if (sceneState.selected !== id) hidePopup(); });
+      }
+    }
+    function hidePopup() { popupSlot.innerHTML = ""; }
+
+    /* ---------------- filters + mini cards ---------------- */
+    var filter = "all", popSeed = 0;
+    var filtersEl = document.getElementById("filters");
+    var gridEl = document.getElementById("mini-grid");
+    function renderFilters() {
+      filtersEl.innerHTML = FILTERS.map(function (f) {
+        return '<button type="button" class="chip-btn' + (filter === f.key ? " on" : "") + '" data-filter="' + f.key + '" aria-label="Filter ' + f.label + '" aria-pressed="' + (filter === f.key) + '">' + f.label + '<span class="n">' + f.n + "</span></button>";
+      }).join("");
+      filtersEl.querySelectorAll("[data-filter]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          filter = el.dataset.filter; popSeed++;
+          renderFilters(); renderCards();
+          var f = FILTERS.filter(function (x) { return x.key === filter; })[0];
+          pushFeed("Filter tim diterapkan: " + f.label + " — " + f.n + " bot ditampilkan.");
+        });
+      });
+    }
+    function renderCards() {
+      gridEl.innerHTML = BOTS.map(function (bot, i) {
+        var dimmed = filter !== "all" && bot.cat !== filter;
+        return '<button type="button" class="bot-card' + (popSeed > 0 ? " pop" : "") + (sceneState.selected === bot.id ? " selected" : "") + (dimmed ? " dimmed" : "") + '" data-bot="' + bot.id + '" style="--i:' + i + ";--j:" + i + ";--bot:" + bot.color + '" aria-label="Pilih ' + esc(bot.name) + ' di scene kantor" aria-pressed="' + (sceneState.selected === bot.id) + '">' +
+          '<span class="mini-head"><span class="avatar lg" style="background:' + bot.color + '" aria-hidden="true">' + bot.mono + "</span>" +
+          '<span style="min-width:0"><span class="mini-name">' + esc(bot.name) + '</span><span class="mini-lane" style="color:' + bot.color + '">' + esc(bot.lane) + "</span></span>" +
+          (bot.featured ? '<span class="prio-chip" style="margin-left:auto;flex:none">Prioritas</span>' : "") + "</span>" +
+          '<span class="mini-meta">' + badgeHTML(bot) + '<span class="mini-updated">diperbarui ' + wibHM(bot.updated) + "</span></span>" +
+          '<span class="mini-act">' + esc(bot.activity) + "</span>" +
+        "</button>";
+      }).join("");
+      gridEl.querySelectorAll(".bot-card").forEach(function (el) {
+        el.addEventListener("click", function () {
+          var id = el.dataset.bot;
+          sceneState.selected = sceneState.selected === id ? null : id;
+          if (sceneState.selected) showPopup(id, true); else hidePopup();
+          syncPressed();
+          if (sceneState.selected) document.getElementById("scene-wrap").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+        });
+      });
+    }
+    renderFilters(); renderCards();
+
+    /* ---------------- token tab ---------------- */
+    (function renderTokens() {
+      var totals = BOTS.reduce(function (a, b) { return { input: a.input + b.tokens.input, output: a.output + b.tokens.output, total: a.total + b.tokens.total }; }, { input: 0, output: 0, total: 0 });
+      var maxTotal = Math.max.apply(null, BOTS.map(function (b) { return b.tokens.total; }));
+      document.getElementById("token-stats").innerHTML =
+        '<div class="stat"><div class="v">' + numFmt.format(totals.total) + '</div><div class="c">Total token kantor — 24 jam terakhir (demo)</div></div>' +
+        '<div class="stat"><div class="v">' + numFmt.format(totals.input) + '</div><div class="c">Token masuk (input) — 24 jam terakhir</div></div>' +
+        '<div class="stat"><div class="v">' + numFmt.format(totals.output) + '</div><div class="c">Token keluar (output) — 24 jam terakhir</div></div>' +
+        '<div class="stat"><div class="v">9 / 9</div><div class="c">Bot ada di snapshot demo</div></div>';
+      var sorted = BOTS.slice().sort(function (a, b) { return b.tokens.total - a.tokens.total; });
+      document.getElementById("token-list").innerHTML = sorted.map(function (bot) {
+        var tk = bot.tokens;
+        var inPct = tk.total > 0 ? (tk.input / tk.total * 100) : 0;
+        return "<li>" +
+          '<div class="token-row"><span class="sw" style="background:' + bot.color + '" aria-hidden="true"></span><span class="nm">' + esc(bot.name) + '</span>' +
+          '<span class="tot">' + numFmt.format(tk.total) + " <span>token</span></span></div>" +
+          '<div class="token-bar" role="img" aria-label="' + esc(bot.name) + ": total " + numFmt.format(tk.total) + " token — " + numFmt.format(tk.input) + " masuk, " + numFmt.format(tk.output) + ' keluar"><div class="fill" style="width:' + (tk.total / maxTotal * 100) + '%">' +
+          '<div style="height:100%;flex:none;width:' + inPct + "%;background:" + bot.color + '"></div>' +
+          '<div style="height:100%;flex:1;background:' + bot.color + ';opacity:.38"></div></div></div>' +
+          '<div class="token-io">masuk ' + numFmt.format(tk.input) + " · keluar " + numFmt.format(tk.output) + "</div>" +
+        "</li>";
+      }).join("");
+      document.getElementById("report-list").innerHTML = BOTS.map(function (bot) {
+        return "<li>" +
+          '<span class="sw" style="background:' + bot.color + '" aria-hidden="true"></span><span class="nm">' + esc(bot.name) + "</span>" +
+          badgeHTML(bot) +
+          '<span class="act">' + esc(bot.activity) + "</span>" +
+          '<span class="tm">' + wibHM(bot.updated) + " WIB</span>" +
+        "</li>";
+      }).join("");
+    })();
+
+    /* ---------------- routing tab ---------------- */
+    document.getElementById("route-grid").innerHTML = ROUTES.map(function (rt) {
+      return '<div class="route-item reveal"><span class="topic">' + esc(rt.topic) + '</span><span class="arr" aria-hidden="true">→</span><span class="who"><span class="sw" style="background:' + rt.color + '" aria-hidden="true"></span>' + esc(rt.who) + "</span></div>";
+    }).join("");
+    document.getElementById("rules-grid").innerHTML = RULES.map(function (rl) {
+      return '<div class="rule reveal"><span class="num">' + rl.n + '</span><div><h4>' + esc(rl.title) + "</h4><p>" + esc(rl.body) + "</p></div></div>";
+    }).join("");
+
+    /* ---------------- tabs ---------------- */
+    var sessionEvents = [{ key: "open", ts: Date.now(), text: "Kantor dibuka — sesi dimulai, 9 bot terpantau (data demo).", fresh: true }];
+    function pushFeed(text) {
+      sessionEvents.unshift({ key: "ev-" + Date.now(), ts: Date.now(), text: text, fresh: true });
+      if (sessionEvents.length > 8) sessionEvents.length = 8;
+      renderFeed();
+    }
+    document.querySelectorAll("#tabs .vo-tab").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll("#tabs .vo-tab").forEach(function (b) { b.classList.toggle("active", b === btn); b.setAttribute("aria-selected", b === btn ? "true" : "false"); });
+        document.querySelectorAll(".panel").forEach(function (p) { p.hidden = p.id !== "panel-" + btn.dataset.tab; });
+        initReveals(); startCounters();
+      });
+    });
+
+    /* ---------------- feed (debug) ---------------- */
+    function renderFeed() {
+      var nowMs = Date.now();
+      var snap = BOTS.map(function (bot) {
+        return { key: "snap-" + bot.id, ts: bot.updated, text: bot.name + ": " + STATUS_LABEL[bot.status] + " — " + bot.activity, fresh: false };
+      });
+      var items = sessionEvents.concat(snap).sort(function (a, b) { return b.ts - a.ts; }).slice(0, 9);
+      document.getElementById("feed").innerHTML = items.map(function (it) {
+        return '<li class="' + (it.fresh ? "fresh" : "") + '"><span class="ts">' + wibTime(new Date(it.ts)) + "</span><span>" + esc(it.text) + '</span><span class="rel">' + relLabel(it.ts, nowMs) + "</span></li>";
+      }).join("") +
+      '<li><span class="ts">17 Okt 2026</span><span>Review tim #1 selesai — 9 bot terverifikasi aktif; aturan “lapor dulu sebelum bikin” ditambahkan.</span><span class="rel"></span></li>';
+    }
+    renderFeed();
+    document.getElementById("btn-refresh").addEventListener("click", function () { pushFeed("Status demo dimuat ulang."); });
+
+    var kerjaCount = BOTS.filter(function (b) { return b.status === "kerja"; }).length;
+    document.getElementById("stat-kerja").dataset.count = String(kerjaCount);
+    var latest = Math.max.apply(null, BOTS.map(function (b) { return b.updated; }));
+    document.getElementById("dbg-snap").innerHTML = "diperbarui <strong style=\"color:var(--text)\">" + wibHM(latest) + " WIB</strong> · 9/9 bot (demo)";
+
+    /* ---------------- clock + uptime ---------------- */
+    var startTs = Date.now();
+    function tickClock() {
+      var now = new Date();
+      document.getElementById("clock").textContent = wibTime(now);
+      document.getElementById("clock-date").textContent = dateFmt.format(now);
+      var dbg = document.getElementById("dbg-clock");
+      if (dbg) dbg.textContent = wibTime(now) + " WIB";
+      var el = Math.floor((Date.now() - startTs) / 1000);
+      var up = document.getElementById("dbg-uptime");
+      if (up) up.textContent = pad(Math.floor(el / 3600)) + ":" + pad(Math.floor((el % 3600) / 60)) + ":" + pad(el % 60);
+    }
+    tickClock(); setInterval(tickClock, 1000);
+    setInterval(renderFeed, 30000);
+
+    /* ---------------- reveal + counters ---------------- */
+    var revealIO = null;
+    function initReveals() {
+      var els = document.querySelectorAll(".reveal:not(.in)");
+      if (reduced || !("IntersectionObserver" in window)) { els.forEach(function (el) { el.classList.add("in"); }); return; }
+      if (!revealIO) {
+        revealIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); } });
+        }, { threshold: 0.12, rootMargin: "0px 0px -30px 0px" });
+      }
+      els.forEach(function (el) { revealIO.observe(el); });
+    }
+    function countUp(el) {
+      var end = parseInt(el.dataset.count, 10) || 0;
+      if (reduced) { el.textContent = String(end); return; }
+      var t0 = null;
+      function step(ts) {
+        if (t0 === null) t0 = ts;
+        var p = Math.min(1, (ts - t0) / 700), eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = String(Math.round(end * eased));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    var counted = false;
+    function startCounters() {
+      if (counted) return;
+      var panel = document.getElementById("panel-debug");
+      if (panel.hidden) return;
+      counted = true;
+      document.querySelectorAll("[data-count]").forEach(countUp);
+    }
+    initReveals();
+
+    /* ---------------- deploy kit ---------------- */
+    var REPO_DESC = "Virtual Office Showcase — kantor pixel-art top-down berisi 9 bot AI dengan sprite hidup (kerja = ngetik, nyantai = Zzz, terjadwal = jam), panel agen, token usage, routing plan & aturan tim. Satu file HTML statis, data demo, siap deploy ke Vercel.";
+    var README = [
+      "# Virtual Office Showcase",
+      "",
+      "Kantor pixel-art top-down berisi 9 bot AI dengan peran masing-masing — digambar",
+      "sepenuhnya pakai kode di canvas, tanpa aset gambar eksternal.",
+      "",
+      "## Isi halaman",
+      "",
+      "- **Office** — scene kantor malam 3×3 meja; sprite hidup mengikuti status",
+      "  (kerja = animasi ngetik, nyantai = Zzz melayang, terjadwal = gelembung jam).",
+      "  Hover / klik sprite atau kartu agen buat popup info bot.",
+      "- **Token usage** — pemakaian token per bot, 24 jam terakhir (rolling),",
+      "  lengkap dengan split masuk/keluar.",
+      "- **Routing** — alur request satu pintu: masuk → triage → spesialis,",
+      "  plus peta topik → bot dan aturan jalur.",
+      "- **Aturan** — cara tim dijaga: pintu depan, cara menambah bot, review mingguan.",
+      "- **Debug** — umpan aktivitas dan info sesi.",
+      "",
+      "## Data demo",
+      "",
+      "Ini versi **showcase publik**: tampilan dan animasinya sama dengan versi",
+      "aslinya, tapi semua status, aktivitas, dan angka token adalah **data contoh",
+      "statis** yang tertanam di `index.html`. Versi aslinya privat dan ter-update",
+      "otomatis dari sistem pemilik.",
+      "",
+      "## Deploy",
+      "",
+      "Satu file `index.html` mandiri — tanpa build step, tanpa backend.",
+      "",
+      "### Vercel",
+      "",
+      "1. Push repo ini ke GitHub.",
+      "2. Di vercel.com → Add New → Project → pilih repo ini → Deploy.",
+      "3. Link publik: `virtual-office-showcase.vercel.app` (atau nama repo kamu).",
+      "",
+      "### Lokal",
+      "",
+      "Buka `index.html` langsung di browser, atau sajikan dengan server statis apa pun.",
+      "",
+      "## Teknologi",
+      "",
+      "HTML + CSS + JavaScript vanilla. Scene dirender di `<canvas>` dengan",
+      "`image-rendering: pixelated`; font Archivo, IBM Plex Mono, dan Press Start 2P",
+      "dari Google Fonts. Menghormati `prefers-reduced-motion` dan",
+      "`prefers-color-scheme` (mode terang/gelap mengikuti sistem).",
+      ""
+    ].join("\n");
+
+    function download(name, content, type) {
+      var blob = new Blob([content], { type: type });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    }
+    document.getElementById("dl-html").addEventListener("click", function () {
+      download("index.html", "<!doctype html>\n" + document.documentElement.outerHTML, "text/html;charset=utf-8");
+    });
+    document.getElementById("dl-readme").addEventListener("click", function () {
+      download("README.md", README, "text/markdown;charset=utf-8");
+    });
+    document.getElementById("cp-desc").addEventListener("click", function () {
+      var note = document.getElementById("copy-note");
+      function done(ok) { note.textContent = ok ? "Deskripsi repo tersalin — paste ke kolom About di GitHub." : "Gagal menyalin otomatis — salin manual dari kotak deskripsi di bawah."; }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(REPO_DESC).then(function () { done(true); }, function () { done(false); });
+      } else { done(false); }
+    });
+    </script>
+  </body>
+</html>
